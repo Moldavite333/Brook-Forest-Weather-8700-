@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101820">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://api.open-meteo.com">
+<link rel="preconnect" href="https://api.weather.gov">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<title>Brook Forest Weather Center</title>
+<style>
+:root{--bg:#0b1117;--card:#121b24;--card2:#17222d;--text:#edf5fb;--muted:#9fb0bf;--line:#243442;--accent:#8ecae6;--warn:#ffd166;--bad:#ff7b72;--good:#79d69f}
+*{box-sizing:border-box} body{margin:0;background:linear-gradient(#0b1117,#0d151d);color:var(--text);font:15px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+.wrap{max-width:900px;margin:auto;padding:14px 12px 40px}.top{display:flex;gap:10px;align-items:center;justify-content:space-between;margin:2px 0 12px}
+h1{font-size:20px;margin:0}.sub{color:var(--muted);font-size:12px}.btn{border:1px solid var(--line);background:#1a2834;color:var(--text);padding:9px 12px;border-radius:10px;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.card{background:rgba(18,27,36,.96);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:0 8px 30px #0004}.wide{grid-column:1/-1}
+.label{text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-size:10px;font-weight:800}.big{font-size:34px;font-weight:800;margin-top:2px}.metric{font-size:19px;font-weight:750}.muted{color:var(--muted)}.row{display:flex;gap:12px;align-items:center;justify-content:space-between}.stack{display:flex;gap:10px;flex-wrap:wrap}
+.pill{padding:5px 8px;border-radius:999px;background:#1a2732;border:1px solid var(--line);font-size:12px}.good{color:var(--good)}.warn{color:var(--warn)}.bad{color:var(--bad)}
+#synopsis{font-size:17px;line-height:1.5;font-weight:620}.day{display:grid;grid-template-columns:86px 1fr 1fr 1fr;gap:8px;padding:10px 0;border-top:1px solid var(--line);align-items:center}.day:first-child{border-top:0}
+.model{display:grid;grid-template-columns:1.4fr .7fr .7fr .8fr;gap:8px;padding:8px 0;border-top:1px solid var(--line);font-size:12px}.model:first-child{border-top:0}
+#radarMap{height:330px;border-radius:12px;overflow:hidden;background:#0f1820}.alert{border-left:4px solid var(--warn);padding:9px 10px;background:#201d15;border-radius:8px;margin-top:8px}
+.small{font-size:11px}.source a{color:var(--accent);text-decoration:none}.error{color:var(--bad);font-size:12px}
+@media(min-width:700px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.wide{grid-column:1/-1}.span2{grid-column:span 2}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div><h1>Brook Forest Weather Center</h1><div class="sub">8,700 ft • model consensus + NWS + NOAA radar</div></div>
+    <button class="btn" onclick="loadAll()">Refresh</button>
+  </div>
+
+  <div id="status" class="sub" style="margin-bottom:10px">Loading public weather data…</div>
+
+  <div class="grid">
+    <section class="card"><div class="label">Observed / nearest NWS</div><div id="obsTemp" class="big">—</div><div id="obsDetail" class="muted">—</div></section>
+    <section class="card"><div class="label">Model consensus now</div><div id="consTemp" class="big">—</div><div id="consDetail" class="muted">—</div></section>
+    <section class="card"><div class="label">Today precip</div><div id="todayPrecip" class="big">—</div><div id="todayPop" class="muted">—</div></section>
+    <section class="card"><div class="label">Peak wind gust</div><div id="gust" class="big">—</div><div id="confidence" class="muted">—</div></section>
+
+    <section class="card wide">
+      <div class="label">Boiled-down forecast</div>
+      <div id="synopsis">Gathering models. Weather forecasting: where eight supercomputers can disagree with a cloud outside your window.</div>
+    </section>
+
+    <section class="card wide">
+      <div class="row"><div><div class="label">7-day model consensus</div><div class="small muted">Equal-weight mean across available public models; confidence uses model spread.</div></div></div>
+      <div id="days"></div>
+    </section>
+
+    <section class="card wide">
+      <div class="label">Official NWS point forecast</div>
+      <div id="nwsForecast" class="stack" style="margin-top:10px"></div>
+      <div id="alerts"></div>
+    </section>
+
+    <section class="card wide">
+      <div class="row"><div><div class="label">NOAA / NWS live radar</div><div class="small muted">MRMS quality-controlled base reflectivity, refreshed every 5 minutes by NOAA.</div></div>
+      <button class="btn" onclick="refreshRadar()">Radar ↻</button></div>
+      <div id="radarMap" style="margin-top:10px"></div>
+    </section>
+
+    <section class="card wide">
+      <div class="label">Model comparison • today</div>
+      <div id="models" style="margin-top:8px"></div>
+    </section>
+
+    <section class="card wide source">
+      <div class="label">Sources / method</div>
+      <div class="small muted" style="margin-top:8px">
+        Numerical guidance: Open-Meteo public API exposing NOAA HRRR, NBM, NAM, GFS, ECMWF IFS, DWD ICON, Canadian GEM and UK Met Office global guidance. Elevation is forced to 2,652 m / 8,700 ft for statistical downscaling. Official forecast, alerts and observations: api.weather.gov. Radar: NOAA/NWS MRMS base-reflectivity map service. The model mean is kept separate from the official NWS forecast to avoid double-counting blended guidance.
+      </div>
+    </section>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const CFG = {
+  lat: 39.5794, lon: -105.3819, elevationM: 2652, tz: 'America/Denver',
+  models: [
+    ['ncep_hrrr_conus','HRRR'],
+    ['ncep_nbm_conus','NBM'],
+    ['ncep_nam_conus','NAM'],
+    ['ncep_gfs_global','GFS'],
+    ['ecmwf_ifs','ECMWF IFS'],
+    ['icon_global','ICON'],
+    ['cmc_gem_rdps','GEM RDPS'],
+    ['ukmo_global_deterministic_10km','UKMO']
+  ]
+};
+const vars = 'temperature_2m,relative_humidity_2m,precipitation,precipitation_probability,snowfall,cloud_cover,wind_speed_10m,wind_gusts_10m,weather_code';
+let MODEL_DATA=[], radarLayer, map;
+
+function avg(a){const v=a.filter(Number.isFinite); return v.length?v.reduce((x,y)=>x+y,0)/v.length:null}
+function sum(a){const v=a.filter(Number.isFinite); return v.length?v.reduce((x,y)=>x+y,0):0}
+function minv(a){const v=a.filter(Number.isFinite); return v.length?Math.min(...v):null}
+function maxv(a){const v=a.filter(Number.isFinite); return v.length?Math.max(...v):null}
+function sd(a){const m=avg(a); if(m==null)return null; const v=a.filter(Number.isFinite); return Math.sqrt(avg(v.map(x=>(x-m)**2)))}
+function f(v,d=0){return Number.isFinite(v)?v.toFixed(d):'—'}
+function codeText(c){ if(c==null)return ''; if(c<=1)return 'mostly clear'; if(c===2)return 'partly cloudy'; if(c===3)return 'overcast'; if(c>=95)return 'thunderstorms'; if(c>=85)return 'snow showers'; if(c>=71)return 'snow'; if(c>=61)return 'rain'; if(c>=51)return 'drizzle'; if(c>=45)return 'fog'; return 'mixed weather';}
+function localDay(t){return t.slice(0,10)}
+function hourIndex(times){
+  const now = new Date();
+  let best=0,bestDiff=Infinity;
+  times.forEach((t,i)=>{const d=Math.abs(new Date(t).getTime()-now.getTime()); if(d<bestDiff){best=i;bestDiff=d}});
+  return best;
+}
+async function fetchModel(id,label){
+  const u=new URL('https://api.open-meteo.com/v1/forecast');
+  u.searchParams.set('latitude',CFG.lat); u.searchParams.set('longitude',CFG.lon);
+  u.searchParams.set('elevation',CFG.elevationM); u.searchParams.set('timezone',CFG.tz);
+  u.searchParams.set('temperature_unit','fahrenheit'); u.searchParams.set('wind_speed_unit','mph');
+  u.searchParams.set('precipitation_unit','inch'); u.searchParams.set('forecast_days','7');
+  u.searchParams.set('models',id); u.searchParams.set('hourly',vars);
+  const r=await fetch(u); if(!r.ok) throw new Error(label+' '+r.status);
+  const j=await r.json(); return {id,label,...j};
+}
+async function fetchNWS(){
+  const p=await fetch(`https://api.weather.gov/points/${CFG.lat},${CFG.lon}`,{headers:{'Accept':'application/geo+json'}}).then(r=>r.json());
+  const props=p.properties||{};
+  const [fc, stations, alerts]=await Promise.all([
+    fetch(props.forecast).then(r=>r.json()).catch(()=>null),
+    fetch(props.observationStations).then(r=>r.json()).catch(()=>null),
+    fetch(`https://api.weather.gov/alerts/active?point=${CFG.lat},${CFG.lon}`).then(r=>r.json()).catch(()=>null)
+  ]);
+  let obs=null;
+  const st=stations?.features?.[0]?.properties?.stationIdentifier;
+  if(st) obs=await fetch(`https://api.weather.gov/stations/${st}/observations/latest`).then(r=>r.json()).catch(()=>null);
+  return {fc,alerts,obs,office:props.cwa};
+}
+function cToF(c){return c==null?null:c*9/5+32}
+function msToMph(x){return x==null?null:x*2.23694}
+
+function renderNWS(n){
+  const el=document.getElementById('nwsForecast'); el.innerHTML='';
+  const periods=n.fc?.properties?.periods?.slice(0,4)||[];
+  periods.forEach(p=>{
+    const d=document.createElement('div'); d.className='pill';
+    d.innerHTML=`<b>${p.name}</b> ${p.temperature}°${p.temperatureUnit} • ${p.shortForecast}`;
+    el.appendChild(d);
+  });
+  const a=document.getElementById('alerts'); a.innerHTML='';
+  (n.alerts?.features||[]).forEach(x=>{
+    const d=document.createElement('div'); d.className='alert';
+    d.innerHTML=`<b>${x.properties.event}</b><div class="small">${x.properties.headline||''}</div>`;
+    a.appendChild(d);
+  });
+  const o=n.obs?.properties;
+  if(o){
+    const tf=cToF(o.temperature?.value), gust=msToMph(o.windGust?.value), wind=msToMph(o.windSpeed?.value);
+    document.getElementById('obsTemp').textContent=tf==null?'—':`${f(tf)}°`;
+    document.getElementById('obsDetail').textContent=`${o.textDescription||'Latest observation'} • wind ${f(wind)} mph${gust?`, gust ${f(gust)} mph`:''}`;
+  }
+}
+
+function hourlyConsensus(){
+  if(!MODEL_DATA.length)return null;
+  const times=MODEL_DATA[0].hourly.time;
+  const out=times.map((t,i)=>{
+    const get=k=>MODEL_DATA.map(m=>m.hourly?.[k]?.[i]).filter(Number.isFinite);
+    const codes=get('weather_code');
+    return {time:t,temp:avg(get('temperature_2m')),rh:avg(get('relative_humidity_2m')),
+      precip:avg(get('precipitation')),pop:avg(get('precipitation_probability')),
+      snow:avg(get('snowfall')),cloud:avg(get('cloud_cover')),wind:avg(get('wind_speed_10m')),
+      gust:avg(get('wind_gusts_10m')),tempSD:sd(get('temperature_2m')),precipSD:sd(get('precipitation')),
+      code:codes.length?Math.round(avg(codes)):null};
+  });
+  return out;
+}
+function buildDays(cons){
+  const groups={}; cons.forEach(x=>(groups[localDay(x.time)]??=[]).push(x));
+  return Object.entries(groups).map(([date,h])=>{
+    const perModel=MODEL_DATA.map(m=>{
+      const idx=m.hourly.time.map((t,i)=>localDay(t)===date?i:-1).filter(i=>i>=0);
+      return {p:sum(idx.map(i=>m.hourly.precipitation?.[i])), hi:maxv(idx.map(i=>m.hourly.temperature_2m?.[i])), lo:minv(idx.map(i=>m.hourly.temperature_2m?.[i]))}
+    });
+    const pvals=perModel.map(x=>x.p).filter(Number.isFinite);
+    return {date, hi:maxv(h.map(x=>x.temp)), lo:minv(h.map(x=>x.temp)), precip:sum(h.map(x=>x.precip)),
+      pop:maxv(h.map(x=>x.pop)), gust:maxv(h.map(x=>x.gust)), snow:sum(h.map(x=>x.snow)),
+      tempSpread:avg(h.map(x=>x.tempSD)), pRange:[minv(pvals),maxv(pvals)]};
+  });
+}
+function confClass(d){
+  let score=0;
+  if((d.tempSpread??9)<2.5)score++; if((d.tempSpread??9)<4.5)score++;
+  const pr=(d.pRange[1]??0)-(d.pRange[0]??0); if(pr<0.08)score++; if(pr<0.25)score++;
+  if(score>=3)return ['HIGH','good']; if(score>=2)return ['MED','warn']; return ['LOW','bad'];
+}
+function renderModelTable(today){
+  const date=today.date, root=document.getElementById('models'); root.innerHTML='<div class="model muted"><b>Model</b><b>High/Low</b><b>Precip</b><b>Gust</b></div>';
+  MODEL_DATA.forEach(m=>{
+    const idx=m.hourly.time.map((t,i)=>localDay(t)===date?i:-1).filter(i=>i>=0);
+    const hi=maxv(idx.map(i=>m.hourly.temperature_2m?.[i])), lo=minv(idx.map(i=>m.hourly.temperature_2m?.[i]));
+    const pr=sum(idx.map(i=>m.hourly.precipitation?.[i])), gu=maxv(idx.map(i=>m.hourly.wind_gusts_10m?.[i]));
+    root.insertAdjacentHTML('beforeend',`<div class="model"><b>${m.label}</b><span>${f(hi)}° / ${f(lo)}°</span><span>${f(pr,2)}"</span><span>${f(gu)} mph</span></div>`);
+  });
+}
+function renderConsensus(){
+  const cons=hourlyConsensus(); if(!cons)return;
+  const i=hourIndex(cons.map(x=>x.time)), now=cons[i], days=buildDays(cons), today=days[0];
+  document.getElementById('consTemp').textContent=`${f(now.temp)}°`;
+  document.getElementById('consDetail').textContent=`${f(now.rh)}% RH • ${f(now.wind)} mph wind • ${f(now.cloud)}% cloud`;
+  document.getElementById('todayPrecip').textContent=`${f(today.precip,2)}"`;
+  document.getElementById('todayPop').textContent=`peak model PoP ${f(today.pop)}%`;
+  document.getElementById('gust').textContent=`${f(today.gust)} mph`;
+  const [ct,cc]=confClass(today); document.getElementById('confidence').innerHTML=`today confidence <span class="${cc}">${ct}</span>`;
+  const dayRoot=document.getElementById('days'); dayRoot.innerHTML='';
+  days.forEach((d,ix)=>{
+    const [c,cl]=confClass(d); const name=new Date(d.date+'T12:00:00').toLocaleDateString(undefined,{weekday:'short'});
+    dayRoot.insertAdjacentHTML('beforeend',`<div class="day"><b>${ix===0?'Today':name}</b><span>${f(d.hi)}° / ${f(d.lo)}°</span><span>${f(d.precip,2)}" • ${f(d.pop)}%</span><span class="${cl}">${c}</span></div>`);
+  });
+  renderModelTable(today);
+  const wet=today.precip>=0.05 || today.pop>=40, veryWet=today.precip>=0.35, windy=today.gust>=30;
+  let nextWet=days.slice(1).find(d=>d.precip>=0.15 || d.pop>=55);
+  let s=`Today’s ${MODEL_DATA.length}-model consensus is ${f(today.hi)}° / ${f(today.lo)}° at 8,700 ft. `;
+  s += wet ? `There is a meaningful precipitation signal (${f(today.precip,2)}" mean, peak PoP ${f(today.pop)}%). ` : `The model blend is mostly dry (${f(today.precip,2)}" mean). `;
+  if(windy)s+=`Wind is worth respecting, with consensus gusts near ${f(today.gust)} mph. `;
+  if(today.snow>0.05)s+=`Some models produce snow at this elevation, averaging about ${f(today.snow,1)} inches. `;
+  if(nextWet)s+=`The next stronger wet signal is ${new Date(nextWet.date+'T12:00:00').toLocaleDateString(undefined,{weekday:'long'})}, but check the confidence column because mountain forecasts enjoy changing their minds. `;
+  const [c]=confClass(today); s+=`Overall model agreement for today: ${c}.`;
+  document.getElementById('synopsis').textContent=s;
+}
+async function loadAll(){
+  document.getElementById('status').textContent='Refreshing NOAA/NWS and model guidance…';
+  const results=await Promise.allSettled(CFG.models.map(([id,l])=>fetchModel(id,l)));
+  MODEL_DATA=results.filter(x=>x.status==='fulfilled').map(x=>x.value);
+  const failures=results.filter(x=>x.status==='rejected').length;
+  renderConsensus();
+  try{renderNWS(await fetchNWS())}catch(e){console.error(e)}
+  document.getElementById('status').textContent=`Updated ${new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})} • ${MODEL_DATA.length}/${CFG.models.length} models loaded${failures?` • ${failures} unavailable`:''}`;
+  refreshRadar();
+}
+function initMap(){
+  if(!window.L){document.getElementById('radarMap').innerHTML='<div class="error">Radar map library did not load. Use radar.weather.gov.</div>';return}
+  map=L.map('radarMap',{zoomControl:true}).setView([CFG.lat,CFG.lon],9);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'© OpenStreetMap'}).addTo(map);
+  L.circleMarker([CFG.lat,CFG.lon],{radius:6,weight:2,fillOpacity:.9}).addTo(map).bindTooltip('Brook Forest • 8,700 ft');
+  refreshRadar();
+}
+function refreshRadar(){
+  if(!map)return;
+  const b=map.getBounds(), w=b.getWest(),s=b.getSouth(),e=b.getEast(),n=b.getNorth();
+  const url='https://mapservices.weather.noaa.gov/eventdriven/rest/services/radar/radar_base_reflectivity/MapServer/export'
+    +`?bbox=${w},${s},${e},${n}&bboxSR=4326&imageSR=4326&size=1000,700&format=png32&transparent=true&f=image&_=${Date.now()}`;
+  if(radarLayer)map.removeLayer(radarLayer);
+  radarLayer=L.imageOverlay(url,[[s,w],[n,e]],{opacity:.68,interactive:false}).addTo(map);
+}
+if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(()=>{});
+window.addEventListener('load',()=>{initMap();loadAll();setInterval(loadAll,15*60*1000)});
+</script>
+</body></html>
