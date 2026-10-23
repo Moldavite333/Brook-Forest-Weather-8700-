@@ -26,6 +26,8 @@ assert.ok(hrs[0].temp<34,'Short-range HRRR should outweigh global guidance');
 assert.equal(hrs[0].modelCount,2);
 assert.ok([0,2,3,61,71,95].includes(hrs[2].code),'WMO codes should be categorical, not numerically averaged');
 assert.equal(E.wt('ncep_hrrr_conus',200),0,'HRRR should not influence later periods');
+assert.equal(E.dominantCode([{code:80,w:1}]),61,'WMO code 80 is rain showers, not snow');
+assert.equal(E.dominantCode([{code:85,w:1}]),71,'WMO code 85 is snow showers');
 assert.equal(E.leadDays('2026-11-10','2026-10-23'),18);
 assert.equal(E.mountainKey('2026-10-23T06:00:00Z'),'2026-10-23T00:00');
 const noPop=model('ncep_hrrr_conus',[29,31,36],[null,null,null]);
