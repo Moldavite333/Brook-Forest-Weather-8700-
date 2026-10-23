@@ -20,6 +20,7 @@
    const root=$('accuracyBody'),message=$('accuracyInfo');
    if(!root||!message)return;
    if(!data||!Array.isArray(data.records))throw Error('Verification archive invalid');
+   window.accuracyArchive=data;if(window.HomeObservations)window.HomeObservations.show(data);
    const station=data.currentStation,all=data.records;
    const verified=all.filter(x=>x.status==='verified');
    const current=verified.filter(x=>station?.id&&x.observation?.stationId===station.id);
