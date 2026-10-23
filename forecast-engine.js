@@ -27,7 +27,7 @@ window.ForecastEngine=(function forecastFactory(){
   function nwsMap(periods,tz){const m=new Map();for(const p of periods||[]){if(!p.startTime)continue;const t=mountainKey(p.startTime,tz);const temp=p.temperatureUnit==="C"?p.temperature*9/5+32:p.temperature;const pop=p.probabilityOfPrecipitation?.value;m.set(t,{id:"nws",w:2.8,temp:valid(temp)?temp:null,pop:valid(pop)?pop:null,code:codeFromText(p.shortForecast),isDay:p.isDaytime?1:0,precip:null,snowCm:null});}return m;}
   function hourlyConsensus(models,periods,nowHour,tz="America/Denver"){
     const weatherNws=nwsMap(periods,tz);
-    const times=[...new Set(models.flatMap(m=>m.hourly?.time||[]))].sort();
+    const times=[...new Set([...models.flatMap(m=>m.hourly?.time||[]),...weatherNws.keys()])].sort();
     return times.map(t=>{
       const ahead=leadHours(t,nowHour), entries=[];
       for(const m of models){const i=m._index.get(t);if(i==null)continue;const a=m.hourly||{},get=k=>valid(a[k]?.[i])?a[k][i]:null;
