@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "location": {
+    "lat": 39.5794,
+    "lon": -105.3819,
+    "elevationFt": 8700,
+    "tz": "America/Denver"
+  },
+  "updatedAt": null,
+  "currentStation": null,
+  "collector": {
+    "state": "starting",
+    "lastAttempt": null,
+    "lastPredictionCapture": null,
+    "lastObservation": null,
+    "modelFeeds": 0,
+    "nwsForecast": false,
+    "notes": [
+      "Verification is collecting future forecasts; no accuracy claims until real observations have been matched."
+    ]
+  },
+  "records": []
+}
