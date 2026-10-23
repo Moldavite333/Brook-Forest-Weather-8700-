@@ -6,18 +6,55 @@
     "elevationFt": 8700,
     "tz": "America/Denver"
   },
-  "updatedAt": null,
+  "updatedAt": "2026-10-23T10:08:46.092Z",
   "currentStation": null,
   "collector": {
-    "state": "starting",
-    "lastAttempt": null,
-    "lastPredictionCapture": null,
+    "state": "running",
+    "lastAttempt": "2026-10-23T10:08:46.092Z",
+    "lastPredictionCapture": "2026-10-23T10:08:46.092Z",
     "lastObservation": null,
-    "modelFeeds": 0,
-    "nwsForecast": false,
+    "modelFeeds": 10,
+    "nwsForecast": true,
     "notes": [
-      "Verification is collecting future forecasts; no accuracy claims until real observations have been matched."
+      "No suitable NWS station within 60 km and ±2000 ft; station verification unavailable."
     ]
   },
-  "records": []
+  "records": [
+    {
+      "issuedAt": "2026-10-23T10:00:00.000Z",
+      "capturedAt": "2026-10-23T10:08:46.092Z",
+      "validAt": "2026-10-24T10:00:00.000Z",
+      "localHour": "2026-10-24T04:00",
+      "leadHours": 24,
+      "forecastTempF": 41.3,
+      "modelCount": 9,
+      "sourceCount": 10,
+      "nwsIncluded": true,
+      "status": "pending"
+    },
+    {
+      "issuedAt": "2026-10-23T10:00:00.000Z",
+      "capturedAt": "2026-10-23T10:08:46.092Z",
+      "validAt": "2026-10-25T10:00:00.000Z",
+      "localHour": "2026-10-25T04:00",
+      "leadHours": 48,
+      "forecastTempF": 33.9,
+      "modelCount": 8,
+      "sourceCount": 9,
+      "nwsIncluded": true,
+      "status": "pending"
+    },
+    {
+      "issuedAt": "2026-10-23T10:00:00.000Z",
+      "capturedAt": "2026-10-23T10:08:46.092Z",
+      "validAt": "2026-10-26T10:00:00.000Z",
+      "localHour": "2026-10-26T04:00",
+      "leadHours": 72,
+      "forecastTempF": 34.4,
+      "modelCount": 7,
+      "sourceCount": 8,
+      "nwsIncluded": true,
+      "status": "pending"
+    }
+  ]
 }
