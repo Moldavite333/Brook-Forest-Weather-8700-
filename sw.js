@@ -1,4 +1,4 @@
-const CACHE='bf-weather-v9';
+const CACHE='bf-weather-v10';
 const SHELL=['./','./index.html','./forecast-engine.js','./accuracy-monitor.js','./home-observations.js','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL)).then(()=>self.skipWaiting()));
