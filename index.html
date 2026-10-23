@@ -65,7 +65,7 @@ html[data-weather="rain"]{--sky1:#183b53;--sky2:#0a1928;--weatherGlow:rgba(82,15
 html[data-weather="snow"]{--sky1:#3b5b72;--sky2:#142534;--weatherGlow:rgba(207,239,255,.17);--weatherAccent:#ddf5ff;--weatherCard:#1a3545}
 html[data-weather="storm"]{--sky1:#222d48;--sky2:#080f1e;--weatherGlow:rgba(169,150,245,.16);--weatherAccent:#c7bbff;--weatherCard:#1c2639}
 html[data-weather="frost"]{--sky1:#33556a;--sky2:#102331;--weatherGlow:rgba(201,234,251,.17);--weatherAccent:#d1efff;--weatherCard:#173243}
-body{background:radial-gradient(ellipse at 50% -16%,var(--weatherGlow),transparent 64%),radial-gradient(circle at 50% -20%,var(--sky1) 0%,var(--sky2) 45%,#071016 85%);background-attachment:fixed}
+html[data-weather] body{background:radial-gradient(ellipse at 50% -16%,var(--weatherGlow),transparent 64%),radial-gradient(circle at 50% -20%,var(--sky1) 0%,var(--sky2) 45%,#071016 85%)!important;background-attachment:fixed!important}
 html[data-weather] .card{border-color:color-mix(in srgb,var(--weatherAccent) 19%,#1c3543);background:linear-gradient(180deg,color-mix(in srgb,var(--weatherCard) 74%,#0e1c25),rgba(12,27,36,.96))}
 html[data-weather] .card.hero{background:linear-gradient(150deg,color-mix(in srgb,var(--sky1) 65%,#102936),#0e202a 75%,#0a1820)}
 html[data-weather] .brand .mark{border-color:var(--weatherAccent)}
@@ -109,7 +109,7 @@ html[data-weather="snow"] .weatherAtmosphere:after,html[data-weather="frost"] .w
           <div class="heroIcon" id="heroIcon">◌</div>
         </div>
         <div class="signal"><div class="signalLabel">Next important change</div><div class="signalText" id="nextChange">Analyzing the next 24 hours…</div><div class="signalSub" id="nextChangeSub">Model blend + official NWS guidance</div></div>
-        <div id="weatherMood" class="weatherMood" style="margin-top:10px" aria-live="polite">Forecast atmosphere loading</div>
+        <div id="weatherMood" class="weatherMood" style="margin-top:10px" aria-live="polite">Weather themes v9 · Loading forecast</div>
         <div class="timeline" id="homeTimeline"></div>
       </section>
       <div class="homeSide">
@@ -375,7 +375,7 @@ function renderLearn(){
 function renderModelRows(date){const vals=MODEL_DATA.map(m=>{const idx=(m.hourly?.time||[]).map((t,i)=>localDay(t)===date?i:-1).filter(i=>i>=0);return{label:m.label,snow:sum(idx.map(i=>m.hourly.snowfall?.[i]))/2.54,precip:sum(idx.map(i=>m.hourly.precipitation?.[i]))}});const mx=Math.max(.1,maxv(vals.map(x=>x.snow))||maxv(vals.map(x=>x.precip))||1);$('modelRows').innerHTML=vals.map(v=>{const shown=v.snow>.05?v.snow:v.precip;const unit=v.snow>.05?'″ snow':'″ rain';return `<div class="modelRow"><b>${v.label}</b><div class="barTrack"><div class="barFill" style="width:${Math.min(100,shown/mx*100)}%"></div></div><span>${f(shown,1)}${unit.includes('snow')?'″':''}</span></div>`}).join('')}
 async function loadAll(){if(LOAD_RUNNING)return;LOAD_RUNNING=true;const total=CFG.models.length;$('healthModels').textContent='Models loading';try{const [modelRes,nwsRes,ensRes]=await Promise.all([Promise.allSettled(CFG.models.map(([id,label])=>fetchModel(id,label))),fetchNWS().catch(e=>{console.warn('NWS feed unavailable',e);return null}),Promise.allSettled([fetchEnsemble('ncep_gefs05_ensemble_mean','GEFS 0.5° · 35 days',35),fetchEnsemble('ecmwf_ifs025_ensemble_mean','ECMWF ENS',15),fetchEnsemble('cmc_gem_geps_ensemble_mean','GEM ENS',16)])]);const goodModels=modelRes.filter(x=>x.status==='fulfilled').map(x=>x.value),goodEns=ensRes.filter(x=>x.status==='fulfilled').map(x=>x.value);if(goodModels.length){MODEL_DATA=goodModels;LAST_MODELS_TS=Date.now()}else if(Date.now()-LAST_MODELS_TS>2*3600000)MODEL_DATA=[];if(goodEns.length)ENSEMBLE_DATA=goodEns;if(nwsRes){NWS=nwsRes;LAST_NWS_TS=Date.now()}else if(Date.now()-LAST_NWS_TS>2*3600000)NWS=null;CONS=hourlyConsensus();DAYS=buildDays();applyWeatherMood();$('healthModels').textContent=`Models ${MODEL_DATA.length}/${total}${goodModels.length?'':' · retry'}`;renderNWS();renderLocal();renderFrostBanner();if(CONS.length&&DAYS.length){renderHome();renderForecast();renderLearn()}else{const chart=$('hourChart');if(chart)chart.innerHTML='<div class="noData">Hourly forecast feeds unavailable. Retry with refresh.</div>';renderMonth()}refreshRadar();const meta=$('forecastDataHealth');if(meta)meta.textContent=`${MODEL_DATA.length}/${total} model feeds${goodModels.length?'':' (last successful fetch if available)'} · ${NWS?.hourly?.properties?.periods?.length?'NWS hourly connected':'NWS hourly unavailable'} · ${ENSEMBLE_DATA.length} ensemble feeds${ENSEMBLE_DATA.some(x=>x.stale)?' (some cached/outdated)':''} · checked ${new Date().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})}`}catch(e){console.error('Weather refresh failed',e);$('healthModels').textContent='Data unavailable';const meta=$('forecastDataHealth');if(meta)meta.textContent='Weather update failed; retry with refresh.'}finally{LOAD_RUNNING=false}}
 if('serviceWorker' in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
-window.addEventListener('load',()=>{initMaps();loadAll();setInterval(loadAll,30*60*1000)});
+window.addEventListener('load',()=>{document.documentElement.dataset.weather='cloud';initMaps();loadAll();setInterval(loadAll,30*60*1000)});
 </script>
 </body>
 </html>
