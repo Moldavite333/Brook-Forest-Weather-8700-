@@ -79,6 +79,32 @@ html[data-weather="snow"] .weatherAtmosphere:after,html[data-weather="frost"] .w
 .weatherMood{display:inline-flex;gap:6px;align-items:center;font-size:10px;color:var(--weatherAccent);font-weight:850;letter-spacing:.06em;padding:5px 8px;border:1px solid color-mix(in srgb,var(--weatherAccent) 40%,transparent);border-radius:999px;white-space:nowrap}
 @media(prefers-reduced-motion:reduce){.weatherAtmosphere:after{animation:none!important}html{transition:none}}
 
+
+/* Immersive weather presentation: full-app surfaces, not only an icon. */
+html[data-weather]{--sceneHaze:#ffffff0b;--sceneEdge:#89d7ff55;--sceneWash:#102b40;--sceneHighlight:#cfe9ff}
+html[data-weather="sun"]{--sceneHaze:#ffd07826;--sceneEdge:#e0a95783;--sceneWash:#254761;--sceneHighlight:#ffdb8c}
+html[data-weather="cloud"]{--sceneHaze:#d4dce61a;--sceneEdge:#9eb6c677;--sceneWash:#30414d;--sceneHighlight:#d0d9e0}
+html[data-weather="rain"]{--sceneHaze:#65b9ee18;--sceneEdge:#5e9fca88;--sceneWash:#123b55;--sceneHighlight:#84caff}
+html[data-weather="snow"]{--sceneHaze:#e3f6ff2b;--sceneEdge:#b3dfff9a;--sceneWash:#32566d;--sceneHighlight:#e2f6ff}
+html[data-weather="storm"]{--sceneHaze:#b299ff25;--sceneEdge:#8876c188;--sceneWash:#1a2544;--sceneHighlight:#bdadff}
+html[data-weather="frost"]{--sceneHaze:#e4f6ff25;--sceneEdge:#a3e8ff88;--sceneWash:#29536a;--sceneHighlight:#c6edff}
+html[data-weather] body{background:radial-gradient(ellipse 100% 65% at 50% -10%,var(--sceneHaze),transparent 82%),linear-gradient(180deg,var(--sky1) 0%,var(--sceneWash) 32%,var(--sky2) 76%,#06111a 100%)!important;min-height:100vh}
+html[data-weather] .card,html[data-weather] .metricCard,html[data-weather] .ops,html[data-weather] .dayCard,html[data-weather] .monthCell,html[data-weather] .hour,html[data-weather] .station,html[data-weather] .fact,html[data-weather] .accuracyMetric{background:linear-gradient(165deg,color-mix(in srgb,var(--sceneWash) 67%,#091620),#0b1825 96%)!important;border-color:var(--sceneEdge)!important}
+html[data-weather] .card.hero{background:radial-gradient(ellipse at 76% -15%,var(--sceneHaze),transparent 67%),linear-gradient(150deg,var(--sky1),var(--sceneWash) 55%,#081929)!important;box-shadow:0 0 42px var(--sceneHaze),0 14px 48px #0006!important}
+html[data-weather] .bottomNav,html[data-weather] .desktopRail{background:color-mix(in srgb,var(--sceneWash) 70%,#061018)!important;border-color:var(--sceneEdge)!important}
+html[data-weather] .navBtn.active,html[data-weather] .subnav button.active{background:var(--sceneWash)!important;color:var(--sceneHighlight)!important}
+html[data-weather] .healthPill,html[data-weather] .tag,html[data-weather] .ghostBtn{border-color:var(--sceneEdge)!important}
+html[data-weather] .chart,html[data-weather] .timeline .hour.selected{border-color:var(--sceneEdge)!important}
+html[data-weather] .sectionTitle,html[data-weather] .accentBlue{color:var(--sceneHighlight)}
+html[data-weather] .weatherMood{background:var(--sceneHaze);color:var(--sceneHighlight);border-color:var(--sceneEdge);font-size:12px;padding:8px 12px}
+html[data-weather] .weatherAtmosphere{opacity:1}
+html[data-weather="rain"] .weatherAtmosphere:after,html[data-weather="storm"] .weatherAtmosphere:after{opacity:.4;background:repeating-linear-gradient(103deg,transparent 0 24px,#b9e8ff4b 25px,transparent 27px 52px);animation:weatherRain 2.6s linear infinite}
+html[data-weather="snow"] .weatherAtmosphere:after{opacity:.65;background-image:radial-gradient(3px 3px at 30px 30px,#e8faff 90%,transparent),radial-gradient(2px 2px at 110px 140px,#fff 90%,transparent),radial-gradient(2px 2px at 180px 75px,#fff 90%,transparent);background-size:240px 220px;animation:weatherSnow 19s linear infinite}
+html[data-weather="sun"] .weatherAtmosphere:after{opacity:.4;background:radial-gradient(ellipse 55vw 42vh at 78% 15%,#ffc95a8c,transparent 75%);animation:none}
+html[data-weather="cloud"] .weatherAtmosphere:after{opacity:.4;background:radial-gradient(ellipse 70vw 25vh at 20% 12%,#d1e3ef55,transparent 80%),radial-gradient(ellipse 95vw 26vh at 90% 46%,#adbac555,transparent 80%);animation:weatherCloud 25s ease-in-out infinite alternate}
+@keyframes weatherCloud{from{transform:translateX(-4%)}to{transform:translateX(4%)}}
+@media(prefers-reduced-motion:reduce){html[data-weather] .weatherAtmosphere:after{animation:none!important}}
+
 </style>
 </head>
 <body>
