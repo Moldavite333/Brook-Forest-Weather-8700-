@@ -6,12 +6,12 @@
     "elevationFt": 8700,
     "tz": "America/Denver"
   },
-  "updatedAt": "2026-10-31T19:19:03.960Z",
+  "updatedAt": "2026-11-01T00:08:54.762Z",
   "currentStation": null,
   "collector": {
     "state": "running",
-    "lastAttempt": "2026-10-31T19:19:03.960Z",
-    "lastPredictionCapture": "2026-10-31T19:19:03.960Z",
+    "lastAttempt": "2026-11-01T00:08:54.762Z",
+    "lastPredictionCapture": "2026-11-01T00:08:54.762Z",
     "lastObservation": null,
     "modelFeeds": 10,
     "nwsForecast": true,
@@ -102,7 +102,7 @@
       "modelCount": 8,
       "sourceCount": 9,
       "nwsIncluded": true,
-      "status": "pending"
+      "status": "expired"
     },
     {
       "issuedAt": "2026-10-23T21:00:00.000Z",
@@ -1203,6 +1203,42 @@
       "localHour": "2026-11-03T12:00",
       "leadHours": 72,
       "forecastTempF": 47.2,
+      "modelCount": 7,
+      "sourceCount": 8,
+      "nwsIncluded": true,
+      "status": "pending"
+    },
+    {
+      "issuedAt": "2026-11-01T00:00:00.000Z",
+      "capturedAt": "2026-11-01T00:08:54.762Z",
+      "validAt": "2026-11-02T00:00:00.000Z",
+      "localHour": "2026-11-01T17:00",
+      "leadHours": 24,
+      "forecastTempF": 51.9,
+      "modelCount": 9,
+      "sourceCount": 10,
+      "nwsIncluded": true,
+      "status": "pending"
+    },
+    {
+      "issuedAt": "2026-11-01T00:00:00.000Z",
+      "capturedAt": "2026-11-01T00:08:54.762Z",
+      "validAt": "2026-11-03T00:00:00.000Z",
+      "localHour": "2026-11-02T17:00",
+      "leadHours": 48,
+      "forecastTempF": 38.9,
+      "modelCount": 8,
+      "sourceCount": 9,
+      "nwsIncluded": true,
+      "status": "pending"
+    },
+    {
+      "issuedAt": "2026-11-01T00:00:00.000Z",
+      "capturedAt": "2026-11-01T00:08:54.762Z",
+      "validAt": "2026-11-04T00:00:00.000Z",
+      "localHour": "2026-11-03T17:00",
+      "leadHours": 72,
+      "forecastTempF": 42.6,
       "modelCount": 7,
       "sourceCount": 8,
       "nwsIncluded": true,
