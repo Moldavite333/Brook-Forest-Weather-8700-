@@ -6,12 +6,12 @@
     "elevationFt": 8700,
     "tz": "America/Denver"
   },
-  "updatedAt": "2026-11-02T21:43:24.549Z",
+  "updatedAt": "2026-11-03T06:50:09.361Z",
   "currentStation": null,
   "collector": {
     "state": "running",
-    "lastAttempt": "2026-11-02T21:43:24.549Z",
-    "lastPredictionCapture": "2026-11-02T21:43:24.549Z",
+    "lastAttempt": "2026-11-03T06:50:09.361Z",
+    "lastPredictionCapture": "2026-11-03T06:50:09.361Z",
     "lastObservation": null,
     "modelFeeds": 10,
     "nwsForecast": true,
@@ -162,7 +162,7 @@
       "modelCount": 7,
       "sourceCount": 8,
       "nwsIncluded": true,
-      "status": "pending"
+      "status": "expired"
     },
     {
       "issuedAt": "2026-10-24T11:00:00.000Z",
@@ -294,7 +294,7 @@
       "modelCount": 8,
       "sourceCount": 9,
       "nwsIncluded": true,
-      "status": "pending"
+      "status": "expired"
     },
     {
       "issuedAt": "2026-10-24T23:00:00.000Z",
@@ -330,7 +330,7 @@
       "modelCount": 8,
       "sourceCount": 9,
       "nwsIncluded": true,
-      "status": "pending"
+      "status": "expired"
     },
     {
       "issuedAt": "2026-10-25T04:00:00.000Z",
@@ -462,7 +462,7 @@
       "modelCount": 9,
       "sourceCount": 10,
       "nwsIncluded": true,
-      "status": "pending"
+      "status": "expired"
     },
     {
       "issuedAt": "2026-10-25T23:00:00.000Z",
@@ -498,7 +498,7 @@
       "modelCount": 9,
       "sourceCount": 10,
       "nwsIncluded": true,
-      "status": "pending"
+      "status": "expired"
     },
     {
       "issuedAt": "2026-10-26T04:00:00.000Z",
@@ -1455,6 +1455,42 @@
       "localHour": "2026-11-05T14:00",
       "leadHours": 72,
       "forecastTempF": 44.8,
+      "modelCount": 7,
+      "sourceCount": 8,
+      "nwsIncluded": true,
+      "status": "pending"
+    },
+    {
+      "issuedAt": "2026-11-03T06:00:00.000Z",
+      "capturedAt": "2026-11-03T06:50:09.361Z",
+      "validAt": "2026-11-04T06:00:00.000Z",
+      "localHour": "2026-11-03T23:00",
+      "leadHours": 24,
+      "forecastTempF": 29.8,
+      "modelCount": 9,
+      "sourceCount": 10,
+      "nwsIncluded": true,
+      "status": "pending"
+    },
+    {
+      "issuedAt": "2026-11-03T06:00:00.000Z",
+      "capturedAt": "2026-11-03T06:50:09.361Z",
+      "validAt": "2026-11-05T06:00:00.000Z",
+      "localHour": "2026-11-04T23:00",
+      "leadHours": 48,
+      "forecastTempF": 31.3,
+      "modelCount": 8,
+      "sourceCount": 9,
+      "nwsIncluded": true,
+      "status": "pending"
+    },
+    {
+      "issuedAt": "2026-11-03T06:00:00.000Z",
+      "capturedAt": "2026-11-03T06:50:09.361Z",
+      "validAt": "2026-11-06T06:00:00.000Z",
+      "localHour": "2026-11-05T23:00",
+      "leadHours": 72,
+      "forecastTempF": 31,
       "modelCount": 7,
       "sourceCount": 8,
       "nwsIncluded": true,
