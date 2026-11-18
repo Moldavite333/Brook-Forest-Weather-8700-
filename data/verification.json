@@ -6,14 +6,14 @@
     "elevationFt": 8700,
     "tz": "America/Denver"
   },
-  "updatedAt": "2026-11-18T11:45:19.887Z",
+  "updatedAt": "2026-11-18T20:33:30.173Z",
   "currentStation": null,
   "collector": {
     "state": "running",
-    "lastAttempt": "2026-11-18T11:45:19.887Z",
-    "lastPredictionCapture": "2026-11-18T11:45:19.887Z",
+    "lastAttempt": "2026-11-18T20:33:30.173Z",
+    "lastPredictionCapture": "2026-11-18T20:33:30.173Z",
     "lastObservation": null,
-    "modelFeeds": 6,
+    "modelFeeds": 10,
     "nwsForecast": true,
     "notes": [
       "No suitable NWS station within 60 km and ±2000 ft; station verification unavailable."
@@ -2106,7 +2106,7 @@
       "modelCount": 7,
       "sourceCount": 8,
       "nwsIncluded": true,
-      "status": "pending"
+      "status": "expired"
     },
     {
       "issuedAt": "2026-11-08T22:00:00.000Z",
@@ -2202,7 +2202,7 @@
       "modelCount": 7,
       "sourceCount": 8,
       "nwsIncluded": true,
-      "status": "pending"
+      "status": "expired"
     },
     {
       "issuedAt": "2026-11-09T19:00:00.000Z",
@@ -2262,7 +2262,7 @@
       "modelCount": 8,
       "sourceCount": 9,
       "nwsIncluded": true,
-      "status": "pending"
+      "status": "expired"
     },
     {
       "issuedAt": "2026-11-10T14:00:00.000Z",
@@ -3077,6 +3077,42 @@
       "forecastTempF": 24.1,
       "modelCount": 4,
       "sourceCount": 5,
+      "nwsIncluded": true,
+      "status": "pending"
+    },
+    {
+      "issuedAt": "2026-11-18T20:00:00.000Z",
+      "capturedAt": "2026-11-18T20:33:30.173Z",
+      "validAt": "2026-11-19T20:00:00.000Z",
+      "localHour": "2026-11-19T13:00",
+      "leadHours": 24,
+      "forecastTempF": 48.8,
+      "modelCount": 8,
+      "sourceCount": 9,
+      "nwsIncluded": true,
+      "status": "pending"
+    },
+    {
+      "issuedAt": "2026-11-18T20:00:00.000Z",
+      "capturedAt": "2026-11-18T20:33:30.173Z",
+      "validAt": "2026-11-20T20:00:00.000Z",
+      "localHour": "2026-11-20T13:00",
+      "leadHours": 48,
+      "forecastTempF": 44,
+      "modelCount": 7,
+      "sourceCount": 8,
+      "nwsIncluded": true,
+      "status": "pending"
+    },
+    {
+      "issuedAt": "2026-11-18T20:00:00.000Z",
+      "capturedAt": "2026-11-18T20:33:30.173Z",
+      "validAt": "2026-11-21T20:00:00.000Z",
+      "localHour": "2026-11-21T13:00",
+      "leadHours": 72,
+      "forecastTempF": 33.2,
+      "modelCount": 7,
+      "sourceCount": 8,
       "nwsIncluded": true,
       "status": "pending"
     }
