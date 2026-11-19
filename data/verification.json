@@ -6,12 +6,12 @@
     "elevationFt": 8700,
     "tz": "America/Denver"
   },
-  "updatedAt": "2026-11-18T20:33:30.173Z",
+  "updatedAt": "2026-11-19T02:35:03.034Z",
   "currentStation": null,
   "collector": {
     "state": "running",
-    "lastAttempt": "2026-11-18T20:33:30.173Z",
-    "lastPredictionCapture": "2026-11-18T20:33:30.173Z",
+    "lastAttempt": "2026-11-19T02:35:03.034Z",
+    "lastPredictionCapture": "2026-11-19T02:35:03.034Z",
     "lastObservation": null,
     "modelFeeds": 10,
     "nwsForecast": true,
@@ -2142,7 +2142,7 @@
       "modelCount": 7,
       "sourceCount": 8,
       "nwsIncluded": true,
-      "status": "pending"
+      "status": "expired"
     },
     {
       "issuedAt": "2026-11-09T06:00:00.000Z",
@@ -2298,7 +2298,7 @@
       "modelCount": 8,
       "sourceCount": 9,
       "nwsIncluded": true,
-      "status": "pending"
+      "status": "expired"
     },
     {
       "issuedAt": "2026-11-10T21:00:00.000Z",
@@ -3111,6 +3111,42 @@
       "localHour": "2026-11-21T13:00",
       "leadHours": 72,
       "forecastTempF": 33.2,
+      "modelCount": 7,
+      "sourceCount": 8,
+      "nwsIncluded": true,
+      "status": "pending"
+    },
+    {
+      "issuedAt": "2026-11-19T02:00:00.000Z",
+      "capturedAt": "2026-11-19T02:35:03.034Z",
+      "validAt": "2026-11-20T02:00:00.000Z",
+      "localHour": "2026-11-19T19:00",
+      "leadHours": 24,
+      "forecastTempF": 34.4,
+      "modelCount": 8,
+      "sourceCount": 9,
+      "nwsIncluded": true,
+      "status": "pending"
+    },
+    {
+      "issuedAt": "2026-11-19T02:00:00.000Z",
+      "capturedAt": "2026-11-19T02:35:03.034Z",
+      "validAt": "2026-11-21T02:00:00.000Z",
+      "localHour": "2026-11-20T19:00",
+      "leadHours": 48,
+      "forecastTempF": 29.3,
+      "modelCount": 7,
+      "sourceCount": 8,
+      "nwsIncluded": true,
+      "status": "pending"
+    },
+    {
+      "issuedAt": "2026-11-19T02:00:00.000Z",
+      "capturedAt": "2026-11-19T02:35:03.034Z",
+      "validAt": "2026-11-22T02:00:00.000Z",
+      "localHour": "2026-11-21T19:00",
+      "leadHours": 72,
+      "forecastTempF": 20.9,
       "modelCount": 7,
       "sourceCount": 8,
       "nwsIncluded": true,
